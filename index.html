@@ -52,6 +52,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">My List</a>
+          <li class="nav-item">
+            <a class="nav-link" href="./Back-office.html">Back-office</a>
+          </li>
         </li>
       </ul>
     </div>
@@ -130,7 +133,7 @@
   </div>
 
   <div class="container-fluid my-3">
-    <h2 class="section-title">Trending Show</h2>
+    <h2 class="section-title">Trending Show Romance Movie</h2>
     <div class="row row-cards" id="trendingShow">
       <div class="col-12 col-md-3 col-lg-2 p-0">
         <div class="card brightness my-0">
@@ -172,8 +175,8 @@
 
 
   <div class="container-fluid marginExtra">
-    <h2 class="ml-5 section-title">Watch It Again</h2>
-    <div class="row row-cards">
+    <h2 class="ml-5  section-title">Drama Movie</h2>
+    <div class="row drama row-cards">
       <div class="col-12 col-md-3 col-lg-2 p-0">
         <div class="card brightness my-0">
           <img src="assets/media/media9.jpg" class="card-img-top" alt="...">
@@ -208,8 +211,8 @@
   </div>
 
   <div class="container-fluid marginExtra">
-    <h2 class="section-title">New Releases</h2>
-    <div class="row row-cards">
+    <h2 class="section-title">Thriller movie</h2>
+    <div class="row  thriller row-cards">
       <div class="col-12 col-md-3 col-lg-2 p-0">
         <div class="card brightness my-0">
           <img src="assets/media/media17.jpg" class="card-img-top" alt="...">
@@ -318,43 +321,98 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
     crossorigin="anonymous"></script>
-  <script src="script.js"></script>
+  
   <script>
 
-    const url = "https://striveschool-api.herokuapp.com/api/movies/",
-    const category = new URLSearchParams(window.location.search).get('category')
-
-    const movies = () => {
-      fetch(url, {
+    // const url = "https://striveschool-api.herokuapp.com/api/movies/",
+    // const category = new URLSearchParams(window.location.search).get('category')
+    let arr = []
+    const movies = async () => {
+     
+      const response = await fetch('https://striveschool-api.herokuapp.com/api/movies/', {
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGRjNzMzNGIzNTgxNzAwMTVjMjI3NWIiLCJpYXQiOjE2MjUyMTU2MjksImV4cCI6MTYyNjQyNTIyOX0.6dLkJUYuUgbZhd39cCKYrx2lNucjMBcgvtD068hMwLI",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGRjNzMzNGIzNTgxNzAwMTVjMjI3NWIiLCJpYXQiOjE2Mjk0NTQ3NzMsImV4cCI6MTYzMDY2NDM3M30.qps9qWy0-xKyDSsVMUwBv2wHHuGulreR0vBFfmnoDOM",
         }
-      }).then(resp => resp.json())
-        .then(data => {
-          console.log(data)
-          let row = document.getElementById("trendingShow")
-          row.innerHTML = ""
-          data.forEach(movie => {
-
-            row.innerHTML += `<div class="col-12 col-md-3 col-lg-2 p-0">
-        <div class="card brightness my-0">
-          <img src="${movie.imageUrl}" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">${movie.name}</h5>
-            <p class="card-text">${movie.description}</p>
-            <h5 class="card-title">${movie.category}</h5>
-            </div>
-          <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Netflix</div>
-        </div>
-      </div>`
-
+      })
+      
+      if(response.ok){
+      const categories = await response.json()
+        //  console.log(categories)
+         const movieList= await Promise.all(categories.map(async (category )=>{
+            const resp = await fetch('https://striveschool-api.herokuapp.com/api/movies/' + category,{
+              headers: {
+                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGRjNzMzNGIzNTgxNzAwMTVjMjI3NWIiLCJpYXQiOjE2Mjk0NTQ3NzMsImV4cCI6MTYzMDY2NDM3M30.qps9qWy0-xKyDSsVMUwBv2wHHuGulreR0vBFfmnoDOM",
+              } 
+                
+            })
+            return await resp.json()
+      
           })
-        }).catch(error => alert(error))
+         )
+        //  console.log(movieList)
+          
+         let arr2 = movieList.flat()
+         arr.push(arr2)
+         console.log(arr2)
 
-    }
-    window.onload = function () {
-      movies()
+         let row = document.getElementById("trendingShow")
+         let row2=document.querySelector('.drama')
+         let row3=document.querySelector('.thriller')
+         row3.innerHTML=""
+         row2.innerHTML=""
+         row.innerHTML = ""
+
+         arr2.map((movie) =>{
+           if(movie.category === 'Romance'){
+            row.innerHTML += `<div class="col-12 col-md-3 col-lg-2 p-0">
+               <div class="card brightness my-0">
+                <img src="${movie.imageUrl}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">${movie.name}</h5>
+                  <p class="card-text">${movie.description}</p>
+                  <h5 class="card-title">${movie.category}</h5>
+                  </div>
+                <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Netflix</div>
+              </div>
+            </div>`
+
+          }
+          if(movie.category === 'Drama'){
+            row2.innerHTML += `<div class="col-12 col-md-3 col-lg-2 p-0">
+               <div class="card brightness my-0">
+                <img src="${movie.imageUrl}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">${movie.name}</h5>
+                  <p class="card-text">${movie.description}</p>
+                  <h5 class="card-title">${movie.category}</h5>
+                  </div>
+                <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Netflix</div>
+              </div>
+            </div>`
+
+          }
+          if(movie.category === 'Thriller'){
+            row3.innerHTML += `<div class="col-12 col-md-3 col-lg-2 p-0">
+               <div class="card brightness my-0">
+                <img src="${movie.imageUrl}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">${movie.name}</h5>
+                  <p class="card-text">${movie.description}</p>
+                  <h5 class="card-title">${movie.category}</h5>
+                  </div>
+                <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Netflix</div>
+              </div>
+            </div>`
+
+          }
+          
+         })
+        }
+        } 
+  
+    window.onload = async function () {
+       await movies()
     }
   </script>
 </body>
